@@ -1,0 +1,39 @@
+{
+  "name": "element-ui-form",
+  "version": "1.0.0",
+  "description": "a data-driven element-ui form",
+  "main": "lib/element-ui-form.js",
+  "scripts": {
+    "build": "webpack --config ./build/webpack.prod.js",
+    "dev": "webpack-dev-server --config ./build/webpack.dev.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Heqingsong/element-ui-form.git"
+  },
+  "keywords": [],
+  "author": "suix0809@qq.com",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Heqingsong/element-ui-form/issues"
+  },
+  "homepage": "https://github.com/Heqingsong/element-ui-form#readme",
+  "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-helper-vue-jsx-merge-props": "2.0.3",
+    "babel-loader": "7.1.2",
+    "babel-plugin-jsx-v-model": "^2.0.3",
+    "babel-plugin-syntax-jsx": "^6.18.0",
+    "babel-plugin-transform-runtime": "6.23.0",
+    "babel-plugin-transform-vue-jsx": "^3.7.0",
+    "babel-preset-env": "1.6.1",
+    "babel-preset-stage-3": "^6.24.1",
+    "webpack": "^5.0.0-beta.18",
+    "webpack-cli": "^3.3.12",
+    "webpack-dev-server": "^3.11.0",
+    "webpack-merge": "^4.2.2"
+  },
+  "dependencies": {
+    "@vue/babel-helper-vue-jsx-merge-props": "^1.0.0"
+  }
+}

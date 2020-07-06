@@ -1,0 +1,17 @@
+{
+  "presets": [
+    ["env", {
+      "modules": false,
+      "targets": {
+        "browsers": ["> 1%", "last 2 versions", "not ie <= 8"]
+      }
+    }],
+    "stage-3"
+  ],
+	"plugins": ["jsx-v-model", "transform-vue-jsx", ["transform-runtime", {
+		"corejs": 2,
+    "helpers": true,
+    "regenerator": true,
+    "useESModules": false
+	}]]
+}
