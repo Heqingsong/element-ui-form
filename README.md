@@ -5,7 +5,10 @@
 
 element-ui
 
-## 一个完整的表单配置
+## 安装
+> npm install element-ui-form
+
+## 使用
 
 ### 1. 注册
 ```js
