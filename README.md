@@ -8,8 +8,8 @@ element-ui
 ## 安装
 > npm install element-ui-form
 
-## 使用文档
-
+## 文档
+[https://heqingsong.github.io/element-ui-form/](https://heqingsong.github.io/element-ui-form/#/)
 
 ## todo list
 - [ ] 测试用例
