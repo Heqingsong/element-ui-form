@@ -16,6 +16,12 @@ export const getVueOptions = option => {
   return result;
 }
 
+export const DateElType = {
+  'time': 'el-time-select',
+  'date': 'el-time-picker',
+  'datetime': 'el-date-picker'
+};
+
 export function renderRadioCheckboxGroup (el, bind, params, h) {
   const EL = el;
   const EL_GROUP = `${el}-group`;
@@ -60,7 +66,7 @@ export function renderComponents(item, config, h) {
   return item.hide ? null : <el-form-item { ...getVueOptions(item) }>
     {
       item.is ?
-      item.is.render.call(this) :
+      item.is.render.call(this, h) :
       renders[`m_${item.options.component}`].call(this, config.props.model, item, h)
     }
   </el-form-item>
@@ -69,8 +75,8 @@ export function renderComponents(item, config, h) {
 export function renderGrids(data, config, h) {
   const GRID = config.grid;
   let col_width = 0;
-  let row_config = config.row;
-  let col_config = config.col;
+  let row_config = config.row || {};
+  let col_config = config.col || {};
   let ROW = GRID[0];
   let COL = GRID[1];
   const renderCol = (row) => {
@@ -96,7 +102,11 @@ export function renderGrids(data, config, h) {
       col_config.props['span'] = col_width;
     }
   } catch (error) {
-    col_config['props']['span'] = col_width;
+    col_config = {
+      props: {
+        span: col_width
+      }
+    };
   }
 
   row_config = row_config ? getVueOptions(row_config) : {};

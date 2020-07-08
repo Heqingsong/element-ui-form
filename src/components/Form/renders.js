@@ -1,4 +1,4 @@
-import { getVueOptions, renderRadioCheckboxGroup } from './utils';
+import { getVueOptions, renderRadioCheckboxGroup, DateElType } from './utils';
 
 // 下拉列表
 export function m_select(bind, params, h) {
@@ -131,17 +131,14 @@ export function m_switch(bind, params, h) {
 // 时间选择
 export function m_datetime(bind, params, h) {
   const target = params.options;
+  const Type = Object.keys(DateElType).includes(target.type) ? target.type : 'time';
+  const EL = DateElType[Type];
 
-  return target.type && target.type === 'picker' ? (
-    <el-time-picker
+  return (
+    <EL
       v-model={ bind[target.model] }
       { ...getVueOptions(target) }
-    ></el-time-picker>
-  ) : (
-    <el-time-select
-      v-model={ bind[target.model] }
-      { ...getVueOptions(target) }
-    ></el-time-select>
+    ></EL>
   );
 }
 
@@ -202,7 +199,10 @@ export function m_color(bind, params, h) {
   const target = params.options;
 
   return (
-    <el-color-picker v-model={ bind[target.model] }></el-color-picker>
+    <el-color-picker
+      v-model={ bind[target.model] }
+      { ...getVueOptions(target) }
+    ></el-color-picker>
   );
 }
 
@@ -217,7 +217,7 @@ export function m_tag(bind, params, h) {
             this.handleTagClose(bind[target.model], option.value)
           }
         }
-      } }>{ option.value }</el-tag>
+      } } { ...getVueOptions(option) }>{ option.value }</el-tag>
     ))
   );
 

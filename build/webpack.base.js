@@ -6,9 +6,9 @@ module.exports = {
     lib: './src/main.js',
   },
   output: {
-    filename: `${librayName}.js`,
+    filename: `${librayName}.min.js`,
     path: path.resolve(__dirname, '../lib'),
-    library: librayName,
+    library: 'ElementUIForm',
     libraryTarget: 'umd'
   },
   externals: {
