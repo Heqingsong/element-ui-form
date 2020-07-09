@@ -1,5 +1,5 @@
 # element-ui-form
-一个数据驱动的element ui 表单工具，负责根据数据模型生成相应表单界面
+一个数据驱动的element ui 表单工具，负责根据数据模型生成相应表单界面，减少大量重复的表单组件代码编写，提高研发效率。
 
 ### 所有支持组件总览
 ```html
@@ -781,9 +781,8 @@ export default {
               datetime: '',
               select: ''
             },
-            'label-width': '170px',
-            size: 'mini',
-            'label-position': 'right',
+            labelWidth: '170px',
+            labelPosition: 'right',
             rules: {
               input: [
                 { required: true, message: '请输入名称', trigger: 'blur' },
@@ -911,8 +910,7 @@ export default {
           props: {
             model: {
               value: '测试内容'
-            },
-            size: 'mini'
+            }
           }
         },
         formData: [{
@@ -1030,8 +1028,7 @@ export default {
           props: {
             model: {
               value: ''
-            },
-            size: 'mini'
+            }
           }
         },
         formData: [{

@@ -1,38 +1,36 @@
 import * as renders from './renders';
+import Components from './element';
 
 const vueRenderAttrs = ['class', 'style', 'attrs', 'props', 'domProps', 'on', 'nativeOn', 'directives', 'scopedSlots', 'slot', 'key', 'ref', 'refInFor'];
 
-export const getVueOptions = option => {
-  let result = {};
+export const getVueOptions = option => vueRenderAttrs.reduce((value, target) => {
+  const key = option[target];
 
-  vueRenderAttrs.forEach(key => {
-    const value = option[key];
-
-    if (value !== undefined) {
-      result[key] = value;
-    }
-  });
-
-  return result;
-}
+  if (key !== undefined) {
+    value[target] = key;
+  }
+  
+  return value;
+}, {});
 
 export const DateElType = {
-  'time': 'el-time-select',
-  'date': 'el-time-picker',
-  'datetime': 'el-date-picker'
-};
+  time: Components.time.select,
+  date: Components.time.picker,
+  datetime: Components.date
+}
 
 export function renderRadioCheckboxGroup (el, bind, params, h) {
-  const EL = el;
-  const EL_GROUP = `${el}-group`;
-  const EL_BUTTON = `${el}-button`;
+  const EL = Components[el]['index'];
+  const EL_GROUP = Components[el]['group'];
+  const EL_BUTTON = Components[el]['button'];
   const target = params.options;
+  const { group, model, data } = target;
 
-  return target.group ? (
-    <EL_GROUP v-model={ bind[target.model] } { ...getVueOptions(target) }>
+  return group ? (
+    <EL_GROUP v-model={ bind[model] } { ...getVueOptions(target) }>
       {
-        target.data && target.data.map((option, index) => {
-          return target.group.type === 'button' ? (
+        data && data.map((option, index) => {
+          return group.type === 'button' ? (
             <EL_BUTTON
               label={ option.value }
               key={ option.key }
@@ -49,10 +47,10 @@ export function renderRadioCheckboxGroup (el, bind, params, h) {
       }
     </EL_GROUP>
   ) : (
-    target.data && target.data.map((option, index) => {
+    data && data.map((option, index) => {
       return (
         <EL
-          v-model={ bind[target.model] }
+          v-model={ bind[model] }
           label={ option.value }
           key={  option.key }
           { ...getVueOptions(target) }
@@ -63,13 +61,15 @@ export function renderRadioCheckboxGroup (el, bind, params, h) {
 }
 
 export function renderComponents(item, config, h) {
-  return item.hide ? null : <el-form-item { ...getVueOptions(item) }>
+  const { hide, is, options } = item;
+
+  return hide ? null : <Components.form.item { ...getVueOptions(item) }>
     {
-      item.is ?
-      item.is.render.call(this, h) :
-      renders[`m_${item.options.component}`].call(this, config.props.model, item, h)
+      is ?
+      is.render.call(this, h) :
+      renders[`m_${options.component}`].call(this, config.props.model, item, h)
     }
-  </el-form-item>
+  </Components.form.item>
 }
 
 export function renderGrids(data, config, h) {
@@ -81,11 +81,11 @@ export function renderGrids(data, config, h) {
   let COL = GRID[1];
   const renderCol = (row) => {
     return new Array(COL).fill(0).map((item, col) => {
-      let index = row > 0 ? col + row * COL : col;
+      const index = row > 0 ? col + row * COL : col;
       return (
-        <el-col { ...col_config }>
+        <Components.col { ...col_config }>
           { data[index] && renderComponents.call(this, data[index], config, h) }
-        </el-col>
+        </Components.col>
       );
     });
   };
@@ -115,13 +115,24 @@ export function renderGrids(data, config, h) {
   // row
   return new Array(ROW).fill(0).map((item, row) => {
     return (
-      <el-row { ...row_config }>
+      <Components.row { ...row_config }>
         { renderCol(row) }
-      </el-row>
+      </Components.row>
     );
   })
 }
 
 export function renderFormItem(data, config, h) {
   return data.map(item => renderComponents.call(this, item, config, h));
+}
+
+export function renderHocComponents(El, bind, params, h) {
+  const target = params.options;
+  
+  return (
+    <El
+      v-model={ bind[target.model] }
+      { ...getVueOptions(target) }
+    ></El>
+  );
 }

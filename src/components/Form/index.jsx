@@ -1,3 +1,4 @@
+import Components from './element';
 import { getVueOptions, renderGrids, renderFormItem } from './utils';
 
 export default {
@@ -43,11 +44,11 @@ export default {
     const { data, config } = this;
 
     return (
-      <el-form { ...getVueOptions(config) }>
+      <Components.form.index { ...getVueOptions(config) }>
         {
           Array.isArray(config.grid) ? renderGrids.call(this, data, config, h) : renderFormItem.call(this, data, config, h)
         }
-      </el-form>
+      </Components.form.index>
     );
   }
 };

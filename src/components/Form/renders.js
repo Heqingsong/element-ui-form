@@ -1,103 +1,109 @@
-import { getVueOptions, renderRadioCheckboxGroup, DateElType } from './utils';
+import Components from './element';
+import {
+  getVueOptions,
+  renderRadioCheckboxGroup,
+  DateElType,
+  renderHocComponents
+} from './utils';
 
 // 下拉列表
 export function m_select(bind, params, h) {
   const target = params.options;
-  const renderOptions = (target, data) => data && data.map((item, index) => {
+  const { model, group, data } = target;
+
+  const renderOptions = (target, value) => value && value.map((item, index) => {
+    const { label, value, disabled, slots, render } = item;
+
     return (
-      <el-option
-        label={ item.label }
-        value={ item.value }
+      <Components.select.option
+        label={ label }
+        value={ value }
         key={ index }
-        disabled={ item.disabled || null }>
+        disabled={ disabled || null }>
         {
-          target.slots && target.slots.map(item => {
-            return item.render.call(this, h)
-          })
+          slots && slots.map(item => render.call(this, h))
         }
-      </el-option>
+      </Components.select.option>
     );
   });
 
   const renderGroup = target => target.data && target.data.map((item, index) => {
+    const { label, options } = item;
+
     return (
-      <el-option-group key={ index } label={ item.label }>
-        { renderOptions(target, item.options) }
-      </el-option-group>
+      <Components.select.group key={ index } label={ label }>
+        { renderOptions(target, options) }
+      </Components.select.group>
     );
   });
-
+  
   return (
-    <el-select v-model={ bind[target.model] } { ...getVueOptions(target) }>
-      { target.group ? renderGroup(target) : renderOptions(target, target.data) }
-    </el-select>
+    <Components.select.index v-model={ bind[model] } { ...getVueOptions(target) }>
+      { group ? renderGroup(target) : renderOptions(target, data) }
+    </Components.select.index>
   );
 }
 
 // 级联菜单
 export function m_cascader(bind, params, h) {
   const target = params.options;
+  const { panel, model, data } = target;
 
-  return target.panel ? (
-    <el-cascader-panel
-      v-model={ bind[target.model] }
-      options={ target.data || [] }
+  return panel ? (
+    <Components.cascader.panel
+      v-model={ bind[model] }
+      options={ data || [] }
       { ...getVueOptions(target) }
-    ></el-cascader-panel>
+    ></Components.cascader.panel>
   ) : (
-    <el-cascader
-      v-model={ bind[target.model] }
-      options={ target.data || [] }
+    <Components.cascader.index
+      v-model={ bind[model] }
+      options={ data || [] }
       { ...getVueOptions(target) }
-    ></el-cascader>
+    ></Components.cascader.index>
   );
 }
 
 // Number计数器
 export function m_number(bind, params, h) {
-  const target = params.options;
-
-  return (
-    <el-input-number
-      v-model={ bind[target.model] }
-      { ...getVueOptions(target) }
-    ></el-input-number>
-  );
+  return renderHocComponents.call(this, Components.number, bind, params, h);
 }
 
 // 输入框
 export function m_input(bind, params, h) {
   const target = params.options;
+  const { model, slots } = target;
 
   return (
-    <el-input
-      v-model={ bind[target.model] }
+    <Components.input
+      v-model={ bind[model] }
       { ...getVueOptions(target) }
       >
         {
-          target.slots && target.slots.map(item => {
+          slots && slots.map(item => {
             return item.render.call(this, h)
           })
         }
-    </el-input>
+    </Components.input>
   );
 }
 
 // 搜索提示框
 export function m_autocomplete(bind, params, h) {
   const target = params.options;
+  const {  model, slots } = target;
 
   return (
-    <el-autocomplete
-      v-model={ bind[target.model] }
+    <Components.autocomplete
+      v-model={ bind[model] }
       { ...getVueOptions(target) }
     >
       {
-        target.slots && target.slots.map(item => {
+        slots && slots.map(item => {
           return item.render.call(this, h)
         })
       }
-    </el-autocomplete>
+    </Components.autocomplete>
   );
 }
 
@@ -108,35 +114,30 @@ export function m_textarea(bind, params, h) {
 
 // 单选
 export function m_radio(bind, params, h) {
-  return renderRadioCheckboxGroup.call(this, 'el-radio', bind, params, h);
+  return renderRadioCheckboxGroup.call(this, 'radio', bind, params, h);
 }
 
 // 多选
 export function m_checkbox(bind, params, h) {
-  return renderRadioCheckboxGroup.call(this, 'el-checkbox', bind, params, h);
+  return renderRadioCheckboxGroup.call(this, 'checkbox', bind, params, h);
 }
 
 // 滑块
 export function m_switch(bind, params, h) {
-  const target = params.options;
-
-  return (
-    <el-switch
-      v-model={ bind[target.model] }
-      { ...getVueOptions(target) }
-    ></el-switch>
-  );
+  return renderHocComponents.call(this, Components.switch, bind, params, h);
 }
 
 // 时间选择
 export function m_datetime(bind, params, h) {
   const target = params.options;
-  const Type = Object.keys(DateElType).includes(target.type) ? target.type : 'time';
+  const { type, model } = target;
+  const dateMapKey = Object.keys(DateElType);
+  const Type = dateMapKey.includes(type) ? type : dateMapKey[0];
   const EL = DateElType[Type];
 
   return (
     <EL
-      v-model={ bind[target.model] }
+      v-model={ bind[model] }
       { ...getVueOptions(target) }
     ></EL>
   );
@@ -144,104 +145,78 @@ export function m_datetime(bind, params, h) {
 
 // 日期选择
 export function m_date(bind, params, h) {
-  const target = params.options;
-
-  return (
-    <el-date-picker
-      v-model={ bind[target.model] }
-      { ...getVueOptions(target) }
-    ></el-date-picker>
-  );
+  return renderHocComponents.call(this, Components.date, bind, params, h);
 }
 
 // 链接
 export function m_link(bind, params, h) {
   const target = params.options;
+  const { attrs, slots } = target;
 
   return (
-    <el-link { ...getVueOptions(target) }>
-      { target.attrs.text }
+    <Components.link { ...getVueOptions(target) }>
+      { attrs.text }
       {
-        target.slots && target.slots.map(item => {
+        slots && slots.map(item => {
           return item.render.call(this, h)
         })
       }
-    </el-link>
+    </Components.link>
   );
 }
 
 // 滑块
 export function m_slider(bind, params, h) {
-  const target = params.options;
-
-  return (
-    <el-slider
-      v-model={ bind[target.model] }
-      { ...getVueOptions(target) }
-    ></el-slider>
-  );
+  return renderHocComponents.call(this, Components.slider, bind, params, h);
 }
 
 // 评分
 export function m_rate(bind, params, h) {
-  const target = params.options;
-
-  return (
-    <el-rate
-      v-model={ bind[target.model] }
-      { ...getVueOptions(target) }
-    ></el-rate>
-  );
+  return renderHocComponents.call(this, Components.rate, bind, params, h);
 }
 
 // 颜色
 export function m_color(bind, params, h) {
-  const target = params.options;
-
-  return (
-    <el-color-picker
-      v-model={ bind[target.model] }
-      { ...getVueOptions(target) }
-    ></el-color-picker>
-  );
+  return renderHocComponents.call(this, Components.color, bind, params, h);
 }
 
 // 标签
 export function m_tag(bind, params, h) {
   const target = params.options;
+  const { data, model, add } = target;
   const renderTags = () => (
-    target.data && target.data.map((option, index) => (
-      <el-tag key={index} { ...{
+    data && data.map((option, index) => (
+      <Components.tag key={index} { ...{
         on: {
           close: () => {
-            this.handleTagClose(bind[target.model], option.value)
+            this.handleTagClose(bind[model], option.value)
           }
         }
-      } } { ...getVueOptions(option) }>{ option.value }</el-tag>
+      } } { ...getVueOptions(option) }>{ option.value }</Components.tag>
     ))
   );
 
-  return target.add ? (
+  return add ? (
     <div>
       { renderTags() }
       {
         this.tagsInputVisible ? (
-          <el-input
+          <Components.input
             v-model={ this.tagInput }
             ref="saveTagInput"
             { ...{
               on: {
-                blur: () => this.handleInputConfirm(bind[target.model]),
-                '~keyup': () => this.handleInputConfirm(bind[target.model])
+                blur: () => this.handleInputConfirm(bind[model]),
+                '~keyup': () => this.handleInputConfirm(bind[model])
               }
             } }
-            { ...getVueOptions(target.add.input) }
-          ></el-input>
+            { ...getVueOptions(add.input) }
+          ></Components.input>
         ) : (
-          <el-button
+          <Components.button.index
             onClick={ this.showTagInput }
-            { ...getVueOptions(target.add.button) }
-          >{ target.add.button.text || '+'}</el-button>
+            { ...getVueOptions(add.button) }
+          >{ add.button.text || '+'}</Components.button.index>
         )
       }
     </div>
@@ -252,33 +227,33 @@ export function m_tag(bind, params, h) {
 // 按钮
 export function m_button(bind, params, h) {
   const target = params.options;
+  const { data, group } = target;
   const renderButton = () => (
-    target.data && target.data.map((option, index) => (
-      <el-button key={ index } { ...getVueOptions(option) }>{ option.text }</el-button>
+    data && data.map((option, index) => (
+      <Components.button.index key={ index } { ...getVueOptions(option) }>{ option.text }</Components.button.index>
     ))
   );
 
-  return target.group ? (
-    <el-button-group>
+  return group ? (
+    <Components.button.group>
       { renderButton() }
-    </el-button-group>
+    </Components.button.group>
   ) : renderButton();
 }
 
 // 上传
 export function m_upload(bind, params, h) {
   const target = params.options;
+  const { render, slots } = target;
 
   return (
-    <el-upload { ...getVueOptions(target) }>
+    <Components.upload { ...getVueOptions(target) }>
+      { typeof render === 'function' ? render(h, params, this) : null }
       {
-        typeof target.render === 'function' ? target.render(h, params, this) : null
-      }
-      {
-        target.slots && target.slots.map(item => {
+        slots && slots.map(item => {
           return item.render.call(this, h)
         })
       }
-    </el-upload>
+    </Components.upload>
   )
 }

@@ -1,6 +1,6 @@
 {
   "name": "element-ui-form",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "private": false,
   "description": "a data-driven element-ui form",
   "main": "lib/element-ui-form.js",
